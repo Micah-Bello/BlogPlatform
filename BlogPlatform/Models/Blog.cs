@@ -12,7 +12,7 @@ namespace BlogPlatform.Models
     public class Blog
     {
         public int Id { get; set; }
-        public string AuthorId { get; set; }
+        public string BlogUserId { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at most {1} characters.", MinimumLength = 2)]
@@ -39,7 +39,7 @@ namespace BlogPlatform.Models
         [NotMapped]
         public IFormFile Immage { get; set; }
 
-        public virtual BlogUser Author { get; set; }
+        public virtual BlogUser BlogUser { get; set; }
         public virtual ICollection<Post> Posts { get; set; } = new HashSet<Post>();
     }
 }
