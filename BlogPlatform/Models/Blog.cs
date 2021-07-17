@@ -37,8 +37,9 @@ namespace BlogPlatform.Models
         public string ContentType { get; set; }
 
         [NotMapped]
-        public IFormFile Immage { get; set; }
+        public IFormFile Image { get; set; }
 
+        [Display(Name = "Blog User")]
         public virtual BlogUser BlogUser { get; set; }
         public virtual ICollection<Post> Posts { get; set; } = new HashSet<Post>();
     }
