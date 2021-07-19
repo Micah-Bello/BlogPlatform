@@ -45,7 +45,7 @@ namespace BlogPlatform.Models
         public string ContentType { get; set; }
 
         [NotMapped]
-        public IFormFile Immage { get; set; }
+        public IFormFile Image { get; set; }
 
         public virtual Blog Blog { get; set; }
         public virtual BlogUser BlogUser { get; set; }
