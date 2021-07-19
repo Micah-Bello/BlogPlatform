@@ -1,4 +1,6 @@
 ﻿using BlogPlatform.Models;
+using BlogPlatform.Services;
+using BlogPlatform.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,10 +14,12 @@ namespace BlogPlatform.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IBlogEmailSender _emailSender;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IBlogEmailSender emailSender)
         {
             _logger = logger;
+            _emailSender = emailSender;
         }
 
         public IActionResult Index()
@@ -31,6 +35,19 @@ namespace BlogPlatform.Controllers
         public IActionResult Contact()
         {
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Contact(ContactMe model)
+        {
+            if (ModelState.IsValid)
+            {
+                model.Message = $"{model.Message} <hr/> Phone: {model.Phone}";
+                await _emailSender.SendContactEmailAsync(model.Email, model.Name, model.Subject, model.Message);
+                return RedirectToAction("Index");
+            }
+            return View(model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
