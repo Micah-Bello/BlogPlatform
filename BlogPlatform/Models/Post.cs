@@ -35,6 +35,8 @@ namespace BlogPlatform.Models
         [Display(Name = "Updated Date")]
         public DateTime? Updated { get; set; }
 
+
+        [Display(Name = "Status")]
         public ReadyStatus ReadyStatus { get; set; }
         public string Slug { get; set; }
 
