@@ -1,0 +1,14 @@
+﻿button.btn-sm, a.btn-sm {
+    border-radius: 5px;
+}
+
+option {
+    font-weight: bolder;
+    margin-top: 0.25rem;
+    margin-left: 1rem;
+}
+
+div.swal2-container.swal2-center.swal2-backdrop-show > div {
+    outline: 4px solid black;
+    border: 2px solid #ff993b;
+}
