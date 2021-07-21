@@ -15,6 +15,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using BlogPlatform.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace BlogPlatform.Areas.Identity.Pages.Account
 {
@@ -25,16 +28,22 @@ namespace BlogPlatform.Areas.Identity.Pages.Account
         private readonly UserManager<BlogUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IBlogEmailSender _emailSender;
+        private readonly IImageService _imageService;
+        private readonly IConfiguration _config;
 
         public RegisterModel(UserManager<BlogUser> userManager,
                              SignInManager<BlogUser> signInManager,
                              ILogger<RegisterModel> logger,
-                             IBlogEmailSender emailSender)
+                             IBlogEmailSender emailSender,
+                             IImageService imageService, 
+                             IConfiguration config)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _imageService = imageService;
+            _config = config;
         }
 
         [BindProperty]
@@ -46,6 +55,9 @@ namespace BlogPlatform.Areas.Identity.Pages.Account
 
         public class InputModel
         {
+            [Display(Name = "Custom Image")]
+            public IFormFile Image { get; set; }
+
             [Required]
             [Display(Name = "First Name")]
             [StringLength(50, ErrorMessage = "The {0} must be at least {2} and no more than {1} characters long.", MinimumLength = 2)]
@@ -90,7 +102,11 @@ namespace BlogPlatform.Areas.Identity.Pages.Account
                     UserName = Input.Email,
                     Email = Input.Email,
                     FirstName = Input.FirstName,
-                    LastName = Input.LastName
+                    LastName = Input.LastName,
+                    ImageData = (await _imageService.EncodeImageAsync(Input.Image)) ??
+                                await _imageService.EncodeImageAsync(_config["DefaultUserImage"]),
+                    ContentType = Input.Image is null ? Path.GetExtension(_config["DefaultUserImage"]) :
+                                _imageService.ContentType(Input.Image)
                 };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
